@@ -64,7 +64,7 @@ next = do x <- get
 -- labels one element
 labelElt :: MonadState Int m => a -> m (Int, a)
 labelElt a = (,) <$> next <*> pure a
-
+-- the same as labelElt a = fmap (,) next <*> pure a
 
 label :: MonadState Int m => Tree a -> m (Tree (Int, a))
 label = traverse labelElt
