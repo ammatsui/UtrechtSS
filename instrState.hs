@@ -12,6 +12,7 @@ data Counts = Counts { binds   :: Int,
                      } deriving (Eq, Show)
 
 
+-- constants
 oneBind   = Counts 1 0 0 0
 oneReturn = Counts 0 1 0 0
 oneGet    = Counts 0 0 1 0
@@ -23,6 +24,7 @@ instance Monoid Counts where
   mappend (Counts x1 x2 x3 x4) (Counts y1 y2 y3 y4) = Counts (x1+y1) (x2+y2) (x3+y3) (x4+y4)
 
 
+-- <> is the same as mappend, different versions of Haskell => Monoid/Semigroup
 instance Semigroup Counts where
   (Counts x1 x2 x3 x4) <> (Counts y1 y2 y3 y4) = Counts (x1+y1) (x2+y2) (x3+y3) (x4+y4)
 
@@ -67,9 +69,6 @@ labelElt a = (,) <$> next <*> pure a
 label :: MonadState Int m => Tree a -> m (Tree (Int, a))
 label = traverse labelElt
 
-
---run :: State' s a -> s -> (a, Counts)
---run st s = runState' (s, st)
 
 run :: State' s a -> s -> (a, Counts)
 run action st = case runState' action (st, mempty) of
