@@ -10,6 +10,8 @@ newtype Parser a = Parser (String -> Either ErrorMsg (a, String))
 --This parser type does not allow backtracking and is less expressive than the list-based parsers.
 
 
+-- Exercise 1: Write the Functor, Applicative, Monad, and Alternative instances for the parser type above.
+
 helper :: (a->b) -> (Either ErrorMsg (a, String)) -> (Either ErrorMsg (b, String))
 helper g (Right (a, str)) = Right (g a, str)
 helper g (Left error)     = Left error
@@ -44,7 +46,7 @@ instance Alternative Parser where
                                        (Right (a, s)) -> (Right (a, s)) )
 
 
--- Describe the Parser type as a series of monad transformers.
+-- Exercise 2: Describe the Parser type as a series of monad transformers.
 -- State with Either
 
 type Parser' a = StateT String (Either ErrorMsg) a
