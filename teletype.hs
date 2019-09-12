@@ -101,11 +101,15 @@ runConsole (Put c x) = do    putChar c; runConsole x
 --A monad containing an environment of type r, output of type w and an updatable state of type s.
 --runRWS :: RWS r w s a -> r -> s -> (a, s, w)
 --Unwrap an RWS computation as a function. (The inverse of rws.)
+-- (>>) :: Monad m => m a -> m b -> m b
 
 --betterFunction :: Int -> RWS ProgramConfig String ProgramState Int
 
 --type TeletypeRW = RWS [Char] () [Char]
---runRWS :: Teletype a -> TeletypeRW a 
---runnRWS (End c) = RWS listget () [c]
---runnRWS (Get g) = RWS (fmap g listget) () liststate
---runnRWS (Put c x) = RWS 
+
+--runRWS :: Teletype a -> TeletypeRW a
+--runRWS (End c) = state (\c -> ((), c))
+--runRWS (Get g) = (do c <- getchar; return g c) >> runRWS (g c) -- I have (almost) no idea what to do here
+--runRWS (Put c x) = state (\s -> ((), s ++ [c])) >> runRWS x
+
+--mockConsole :: Teletype a -> [Char] -> (a, [Char]) 
