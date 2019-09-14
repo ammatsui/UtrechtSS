@@ -8,14 +8,14 @@ data Cons    t a = Cons a (t a)
 
 -- Exercise 1. Give Haskell code that represents the following two square matrices as elements of the Square data type
 
---let row1    = Cons 1 (Cons 0 Nil) 
---let row2    = Cons 0 (Cons 1 Nil) 
---let matrix1 = Succ (Succ (Zero (Cons row1 (Cons row2 Nil))))
+let row1    = Cons 1 (Cons 0 Nil) 
+let row2    = Cons 0 (Cons 1 Nil) 
+let matrix1 = Succ (Succ (Zero (Cons row1 (Cons row2 Nil))))
 
---let row1'   = Cons 1 (Cons 2 (Cons 3 Nil))
---let row2'   = Cons 4 (Cons 5 (Cons 6 Nil))
---let row3'   = Cons 7 (Cons 8 (Cons 9 Nil))
---let matrix2 = Succ (Succ (Succ (Zero (Cons row1' (Cons row2' (Cons row3' Nil))))))
+let row1'   = Cons 1 (Cons 2 (Cons 3 Nil))
+let row2'   = Cons 4 (Cons 5 (Cons 6 Nil))
+let row3'   = Cons 7 (Cons 8 (Cons 9 Nil))
+let matrix2 = Succ (Succ (Succ (Zero (Cons row1' (Cons row2' (Cons row3' Nil))))))
 
 
 
@@ -63,6 +63,13 @@ mapCons mapT mapA f (Cons x consx) =  Cons (f x) (mapT mapA f consx)
 mapSquare' :: (forall b . ((a -> b) -> a -> b) -> ((a -> b) -> t a -> t b))
            -> ((a -> b) -> a -> b)
            -> ((a -> b) -> Square' t a -> Square' t b)
-mapSquare' mapT mapA f (Zero xs) = Zero (_ (mapT mapA) f xs) 
+mapSquare' mapT mapA f (Zero xs) = Zero (mapT (mapT mapA) f xs) -- it is wrong
 mapSquare' mapT mapA f (Succ xs) = Succ (mapSquare' (mapCons mapT) mapA f xs)
 
+
+mapSquare :: (a - > b) -> Square a -> Square b
+mapSquare = mapSquare' mapNil
+
+
+instance Functor Square where
+  fmap = mapSquare
