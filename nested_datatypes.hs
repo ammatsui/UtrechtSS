@@ -1,6 +1,5 @@
 -- http://citeseerx.ist.psu.edu/viewdoc/download;jsessionid=7C29C1EF88F4C46600FC2DCFFA8A8C0C?doi=10.1.1.456.357&rep=rep1&type=pdf
 
-
 {-# language RankNTypes, TypeSynonymInstances, FlexibleInstances #-}
 
 
@@ -68,6 +67,14 @@ mapSquare' :: (forall b . ((a -> b) -> a -> b) -> ((a -> b) -> t a -> t b))
            -> ((a -> b) -> Square' t a -> Square' t b)
 mapSquare' mapT mapA f (Zero xs) = Zero (mapT (mapT mapA) f xs) -- it is wrong
 mapSquare' mapT mapA f (Succ xs) = Succ (mapSquare' (mapCons mapT) mapA f xs)
+
+-- or...
+mapSquare'' :: (forall c d . (c -> d) -> t c -> t d) -> ((c -> d) -> t c -> t d)
+            -> (a -> b) -> Square' t a -> Square' t b
+mapSquare'' mapT mapA f (Zero xs) = Zero (mapT (mapT f) xs)
+mapSquare'' mapT mapA f (Succ xs) = Succ (mapSquare' (mapCons mapT mapA) mapA f xs) -- it is wrong
+
+
 
 
 mapSquare :: (a - > b) -> Square a -> Square b
