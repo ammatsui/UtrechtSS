@@ -1,3 +1,6 @@
+-- http://citeseerx.ist.psu.edu/viewdoc/download;jsessionid=7C29C1EF88F4C46600FC2DCFFA8A8C0C?doi=10.1.1.456.357&rep=rep1&type=pdf
+
+
 {-# language RankNTypes, TypeSynonymInstances, FlexibleInstances #-}
 
 
