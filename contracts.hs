@@ -98,6 +98,7 @@ assert (List c) xs = map (assert c) xs
 
 allPos  = List pos
 allPos' = Pred (all (> 0))
+-- assert allPos [1, 0, 2] --> [1, ⊥
 
 
 -- Describe the differences between assert allPos and assert allPos', and more generally between using List versus using Pred to describe a predicate on lists. 
