@@ -78,9 +78,12 @@ preserves p = DFun (Pred (\x -> True)) (\x -> (Pred (\y -> ((p y) == (p x)) ) ) 
 
 
 -- Exercise 6: Is there a difference between (assert preservesPos) and (assert preservesPos')? 
+-- There is!
+preservesPos = preserves (>0)  -- checks if positivity changed
+preservesPos' = pos ==> pos    -- requires both p x and p (f x) be positive
+-- assert preservesPos  (\x -> x) 0 --> 0   
+-- assert preservesPos' (\x -> x) 0 --> ⊥
 
-preservesPos = preserves (>0)
-preservesPos' = pos ==> pos
 
 
 -- We can add another contract constructor:
