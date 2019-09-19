@@ -18,6 +18,9 @@ get    >>= (\s -> get >>= k s) == get >>= (\s -> k s s)
 -- Exercise 1: Give default implementations of get and put in terms of modify, 
 -- and a default implementation of modify in terms of get and put.
 
+--  get = state $ \s -> (s, s)
+--  put s = state $ \_ -> ((), s)
+--  it is correct because  state :: (s -> (a, s)) -> m a, so it turns the first into a Teletype. Which is exactly what is needed here
 
 
 import Control.Monad.State.Lazy
