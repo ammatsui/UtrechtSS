@@ -75,10 +75,6 @@ instance MonadState Char Teletype where
 -- 3 - "put" the resulting new Char
 -- 4 - return the "result" of the function
 
---  get = state $ \s -> (s, s)
---  put s = state $ \_ -> ((), s)
---  it is correct because  state :: (s -> (a, s)) -> m a, so it turns the first into a Teletype. Which is exactly what is needed here
-
 
 
 -- Exercise 5. A Teletype-program can be thought as a description of an interaction with the console. 
