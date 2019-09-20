@@ -15,9 +15,9 @@ data Term = Var TermVariable
 
 -- Examples
 -- * \x -> x
-Identity = Lam "x" (Var "x")
+identity = Lam "x" (Var "x")
 -- * (\x -> x) 3
-Example = App Identity (Num 3)
+example = App identity (Num 3)
 
 
 -- For each representation of lambda calculus,
@@ -39,27 +39,27 @@ alphaEquiv _                  _                = False
 -- Evaluation of a lambda term ((λx.e)a) proceeds by substitution of all occurrences of the variable x with the argument a in e.
 -- replace Var with Term1 in Term2
 
-subst :: (Var, Term) -> Term -> Term  -- doesn't compile because expects one more argument to Var ??
-subst _             (Num b)       = Num b
-subst (Var x, term) (Var v)       = if x == v then term else (Var v)
-subst (Var x, term) (App fun arg) = (App fun' arg')
-                                      where fun' = subst (var, term) fun
-                                            arg' = subst (var, term) arg
-subst (Var x, term) (Lam v term1) = if x == v then (Lam v term1) else (Lam v term1')   -- here must be freshen var
+subst :: (TermVariable, Term) -> Term -> Term
+subst _             (Num b)           = Num b
+subst (x, term) (Var v)           = if x == v then term else (Var v)
+subst (x, term) (App lterm rterm) = (App lterm' rterm')
+                                      where lterm' = subst (x, term) lterm
+                                            rterm' = subst (x, term) rterm
+subst (x, term) (Lam v term1)     = if x == v then (Lam v term1) else (Lam v term1') 
                                                                        where term1' = subst (x, term) term1
 
 
 -- note: to ensure that variables are not accidentally captured
 -- you have to implement a function to "freshen" all the
 -- variables from lambdas
--- 
+-- ?
 -- freshen :: Term -> Term
 
 -- * write an evaluator which implements the beta-reduction rule
 --      (\x. e) v --> subst x by v in e
   
 eval :: Term -> Term
-eval Num b         = Num b
-eval Var v         = Var v
-eval (App fun arg) = App (eval fun) (eval arg) -- it looks wrong
-eval (Lam v term)  = subst (v, (eval term)) term
+eval (Num b)           = Num b
+eval (Var v)           = Var v
+eval (App lterm rterm) = App (eval lterm) (eval rterm)
+eval (Lam v term)      = subst (v, (eval term)) term
