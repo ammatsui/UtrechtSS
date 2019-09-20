@@ -35,14 +35,14 @@ alphaEquiv _                  _                = False
 
 
 -- * write a substitution function
---
+
 subst :: (DeBruijnIndex, Term) -> Term -> Term
-subst _         (Num b)           = Num b
-subst (x, term) (Var v)           = if x == v then term else (Var v)
-subst (x, term) (App lterm rterm) = (App lterm' rterm')
-                                      where lterm' = subst (x, term) lterm
-                                            rterm' = subst (x, term) rterm
-subst (x, term) (Lam term1)       = (Lam term1') where term1' = subst (x+1, term) term1
+subst (x, (Num b)) _               = Num b
+subst (x, (Var v)) term          = if x == v then (Var v) else term
+subst (x, (App lterm rterm)) term  = (App lterm' rterm')
+                                      where lterm' = subst (x, lterm) term
+                                            rterm' = subst (x, rterm) term
+subst (x, (Lam term1))  term    = (Lam term1') where term1' = subst (x+1, term1) term
 
 
 
@@ -51,5 +51,5 @@ subst (x, term) (Lam term1)       = (Lam term1') where term1' = subst (x+1, term
   
 eval :: Term -> Term
 eval (Num x)       = Num x
-eval (App fun arg) = subst (0, fun) arg
-eval (Lam term)    = eval term
+eval (App fun arg) = eval (subst (0, fun) arg)
+eval (Lam term)    = eval term 
