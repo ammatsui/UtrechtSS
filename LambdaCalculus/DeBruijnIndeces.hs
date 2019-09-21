@@ -25,7 +25,7 @@ example = App identity (Num 3)
 -- * write an alpha-equivalence function
 --      (\x. x) alpha-equiv to (\y. y) and so on
 --      (\x y. x) is not alpha-equiv to (\x y. y)
---
+ 
 alphaEquiv :: Term -> Term -> Bool
 alphaEquiv (Num a)           (Num b)           = a == b
 alphaEquiv (Var v)           (Var w)           = v == w              
@@ -37,12 +37,10 @@ alphaEquiv _                  _                = False
 -- * write a substitution function
 
 subst :: (DeBruijnIndex, Term) -> Term -> Term
-subst (x, (Num b)) _               = Num b
-subst (x, (Var v)) term          = if x == v then (Var v) else term
-subst (x, (App lterm rterm)) term  = (App lterm' rterm')
-                                      where lterm' = subst (x, lterm) term
-                                            rterm' = subst (x, rterm) term
-subst (x, (Lam term1))  term    = (Lam term1') where term1' = subst (x+1, term1) term
+subst (x, (Num b))       term  = Num b
+subst (x, (Var v))       term  = if x == v then (Var v) else term
+subst (x, (App fun arg)) term  = (App (subst (0, fun) arg) term)
+subst (x, (Lam term1))   term  = (Lam term1') where term1' = subst (x+1, term1) term
 
 
 
