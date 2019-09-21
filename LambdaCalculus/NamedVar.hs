@@ -40,10 +40,12 @@ alphaEquiv _                  _                = False
 -- replace Var with Term1 in Term2
 
 subst :: (TermVariable, Term) -> Term -> Term
-subst (x, (Num b))       term = Num b
-subst (x, (Var v))       term = if x == v then (Var v) else term
-subst (x, (App fun arg)) term = (App (subst (x, fun) arg) term)
-subst (x, (Lam v term1)) term = if x == v then (Lam v term1) else (Lam v (subst (x, term) term1)) 
+subst (v, value) (Var w)
+    | v == w = value
+    | otherwise = Var w
+subst (v, value) (App f x)    = App (subst (v, value) f) (subst (v, value) x)
+subst _ (Num x)               = Num x
+subst (v, value) (Lam x body) = Lam x (subst (v, value) body)
                                                        
 
 
