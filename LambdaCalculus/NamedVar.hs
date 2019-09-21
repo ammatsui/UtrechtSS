@@ -40,13 +40,11 @@ alphaEquiv _                  _                = False
 -- replace Var with Term1 in Term2
 
 subst :: (TermVariable, Term) -> Term -> Term
-subst _             (Num b)           = Num b
-subst (x, term) (Var v)           = if x == v then term else (Var v)
-subst (x, term) (App lterm rterm) = (App lterm' rterm')
-                                      where lterm' = subst (x, term) lterm
-                                            rterm' = subst (x, term) rterm
-subst (x, term) (Lam v term1)     = if x == v then (Lam v term1) else (Lam v term1') 
-                                                                       where term1' = subst (x, term) term1
+subst (x, (Num b))       term = Num b
+subst (x, (Var v))       term = if x == v then (Var v) else term
+subst (x, (App fun arg)) term = (App (subst (x, fun) arg) term)
+subst (x, (Lam v term1)) term = if x == v then (Lam v term1) else (Lam v (subst (x, term) term1)) 
+                                                       
 
 
 -- note: to ensure that variables are not accidentally captured
@@ -59,7 +57,9 @@ subst (x, term) (Lam v term1)     = if x == v then (Lam v term1) else (Lam v ter
 --      (\x. e) v --> subst x by v in e
   
 eval :: Term -> Term
-eval (Num b)           = Num b
-eval (Var v)           = Var v
-eval (App lterm rterm) = App (eval lterm) (eval rterm)
-eval (Lam v term)      = subst (v, (eval term)) term
+eval (Num x)                            = Num x
+eval (Var x)                            = Var x
+eval (App (Lam x term) t@(Lam y term')) = eval (subst (x, t) term)
+eval (App (Lam x term) term')           = eval (subst (x, term') term)
+eval (App terml termr)                  = eval (App (eval terml) termr)
+eval (Lam x term)                       = (Lam x (eval term))
